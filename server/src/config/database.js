@@ -13,6 +13,18 @@ const connectDB = async () => {
     await client.connect();
     db = client.db('costco');
     console.log('MongoDB Connected to costco database');
+
+    // Create text indexes for search functionality
+    try {
+      await db.collection('receiptdata').createIndex({
+        "itemArray.itemActualName": "text",
+        "itemArray.itemDescription01": "text",
+        "itemArray.itemDescription02": "text"
+      });
+      console.log('Text indexes created for search functionality');
+    } catch (indexError) {
+      console.log('Text indexes may already exist:', indexError.message);
+    }
   } catch (error) {
     console.error(error.message);
     process.exit(1);
